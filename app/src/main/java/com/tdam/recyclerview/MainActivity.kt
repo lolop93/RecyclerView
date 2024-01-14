@@ -2,6 +2,7 @@ package com.tdam.recyclerview
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tdam.recyclerview.databinding.ActivityMainBinding
 
@@ -56,10 +57,43 @@ class MainActivity : AppCompatActivity(), OnClickListener {
             adapter = pokemonAdapter
          }
 
+        binding.btnAdd.setOnClickListener {
+            if(binding.etPokemon.text.toString().isNotEmpty()){
+                val pokemon = Pokemon(binding.etPokemon.text.toString(), 100, "Electrico", 1)
+
+                addPokemonAutomatically(pokemon)
+
+                binding.etPokemon.text?.clear()
+
+
+            }
+        }
+
+    }
+
+    private fun addPokemonAutomatically(pokemon: Pokemon) {
+        pokemonAdapter.addPokemon(pokemon)
     }
 
     //sobrecargamos el metodo onLongClick de la interfaz OnClickListener
     override fun onLongClick(pokemon: Pokemon) {
         //aqui se ejecuta el codigo cuando se hace click largo en un elemento de la lista
+        removePokemonAutomatically(pokemon)
+
+    }
+
+    private fun removePokemonAutomatically(pokemon: Pokemon) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Eliminar Pokemon")
+        builder.setMessage("¿Estas seguro de que quieres eliminar a ${pokemon.nombre}?")
+        builder.setPositiveButton("Si") { _, _ ->
+            pokemonAdapter.removePokemon(pokemon)
+        }
+        builder.setNegativeButton("No") { _, _ ->
+
+        }
+        builder.show()
+
+
     }
 }

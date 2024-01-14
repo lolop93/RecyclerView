@@ -13,6 +13,15 @@ class PokemonAdapter (var listapokemon: MutableList<Pokemon>, private val listen
     inner class ViewHolder (view: View) : RecyclerView.ViewHolder(view) {
 
         val binding = ItemPokemonBinding.bind(view) //esto es para poder acceder a los elementos del layout
+
+        fun setListener(pokemon: Pokemon) {
+            binding.root.setOnLongClickListener {
+                listener.onLongClick(pokemon)
+                true
+
+            }
+        }
+
     }
 
     //este metodo se ejecuta cuando se crea el viewholder
@@ -36,6 +45,18 @@ class PokemonAdapter (var listapokemon: MutableList<Pokemon>, private val listen
         //en este caso solo tenemos un textview que será el nombre del pokemon
         val pokemon = listapokemon.get(position)
 
+        holder.setListener(pokemon)
+
         holder.binding.textView.text = pokemon.nombre
+    }
+
+    fun addPokemon(pokemon: Pokemon) {
+        listapokemon.add(pokemon)
+        notifyDataSetChanged()
+    }
+
+    fun removePokemon(pokemon: Pokemon) {
+        listapokemon.remove(pokemon)
+        notifyDataSetChanged() //este metodo es para que se actualice la lista
     }
 }

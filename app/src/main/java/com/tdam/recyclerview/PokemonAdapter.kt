@@ -1,5 +1,6 @@
 package com.tdam.recyclerview
 
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,6 +49,17 @@ class PokemonAdapter (var listapokemon: MutableList<Pokemon>, private val listen
         holder.setListener(pokemon)
 
         holder.binding.textView.text = pokemon.nombre
+        holder.binding.checkBox.isChecked = pokemon.capturado
+
+
+        holder.binding.checkBox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                pokemon.capturado = true
+                listener.onPokemonCaptured(pokemon)
+            } else {
+//                listener.onPokemonReleased(pokemon)
+            }
+        }
     }
 
     fun addPokemon(pokemon: Pokemon) {

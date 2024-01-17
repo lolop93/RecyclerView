@@ -49,8 +49,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:listitem="@layout/item_pokemon" />
-<!--            android:scrollbars="vertical" -->
-<!--            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lista de capturados"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_pokemon" />
 
 
     </LinearLayout>

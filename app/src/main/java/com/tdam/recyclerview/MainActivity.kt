@@ -10,52 +10,28 @@ class MainActivity : AppCompatActivity(), OnClickListener {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var pokemonAdapter: PokemonAdapter
+    private lateinit var capturadosAdapter : PokemonAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val data = mutableListOf(
-            Pokemon("Pikachu", 100, "Electrico", 1),
-            Pokemon("Charmander", 100, "Fuego", 1),
-            Pokemon("Squirtle", 100, "Agua", 1),
-            Pokemon("Bulbasaur", 100, "Planta", 1),
-            Pokemon("Pidgey", 100, "Volador", 1),
-            Pokemon("Rattata", 100, "Normal", 1),
-            Pokemon("Geodude", 100, "Roca", 1),
-            Pokemon("Gastly", 100, "Fantasma", 1),
-            Pokemon("Machop", 100, "Lucha", 1),
-            Pokemon("Abra", 100, "Psiquico", 1),
-            Pokemon("Eevee", 100, "Normal", 1),
-            Pokemon("Magikarp", 100, "Agua", 1),
-            Pokemon("Snorlax", 100, "Normal", 1),
-            Pokemon("Mew", 100, "Psiquico", 1),
-            Pokemon("Mewtwo", 100, "Psiquico", 1),
-            Pokemon("Zapdos", 100, "Electrico", 1),
-            Pokemon("Articuno", 100, "Hielo", 1),
-            Pokemon("Moltres", 100, "Fuego", 1),
-            Pokemon("Dragonite", 100, "Dragon", 1),
-            Pokemon("Gyarados", 100, "Agua", 1),
-            Pokemon("Lapras", 100, "Agua", 1),
-            Pokemon("Vaporeon", 100, "Agua", 1),
-            Pokemon("Jolteon", 100, "Electrico", 1),
-            Pokemon("Flareon", 100, "Fuego", 1),
-            Pokemon("Machamp", 100, "Lucha", 1),
-            Pokemon("Alakazam", 100, "Psiquico", 1),
-            Pokemon("Gengar", 100, "Fantasma", 1),
-            Pokemon("Golem", 100, "Roca", 1),
-            Pokemon("Rhydon", 100, "Tierra", 1),
-            Pokemon("Kangaskhan", 100, "Normal", 1),
-        )
 
         //al adaptador hay que pasarle la lista de datos y el listener
-        pokemonAdapter = PokemonAdapter(data, this) //this es el listener
+        pokemonAdapter = PokemonAdapter(mutableListOf(), this) //this es el listener
+        capturadosAdapter = PokemonAdapter(mutableListOf(), this)
 
         binding.recyclerView.apply { //aqui le decimos al recyclerview que use el adaptador que hemos creado
             layoutManager = LinearLayoutManager(this@MainActivity) //esto es para que el recyclerview se muestre como una lista
             adapter = pokemonAdapter
          }
+
+        //añadimo es nuevo adapter
+        binding.recyclerView2.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = capturadosAdapter
+        }
 
         binding.btnAdd.setOnClickListener {
             if(binding.etPokemon.text.toString().isNotEmpty()){
@@ -71,9 +47,47 @@ class MainActivity : AppCompatActivity(), OnClickListener {
 
     }
 
-    private fun addPokemonAutomatically(pokemon: Pokemon) {
-        pokemonAdapter.addPokemon(pokemon)
+    private fun getData(){
+        val data = mutableListOf(
+            Pokemon("Pikachu", 100, "Electrico", 1, true),
+            Pokemon("Charmander", 100, "Fuego", 1),
+            Pokemon("Squirtle", 100, "Agua", 1, true),
+            Pokemon("Bulbasaur", 100, "Planta", 1),
+            Pokemon("Pidgey", 100, "Volador", 1),
+            Pokemon("Rattata", 100, "Normal", 1),
+
+            )
+
+        data.forEach {pokemon ->
+           addPokemonAutomatically(pokemon)
+        }
+
     }
+
+    override fun onStart() {
+        super.onStart()
+        getData()
+    }
+
+    private fun addPokemonAutomatically(pokemon: Pokemon) {
+
+        //si por ejemplo el nombre del pokemon es pikachu o tiene la 'a', lo añadimos al segundo adaptador
+        if (pokemon.capturado == true) {
+            capturadosAdapter.addPokemon(pokemon)
+        }else{
+            pokemonAdapter.addPokemon(pokemon)
+        }
+
+    }
+
+    override fun onPokemonCaptured(pokemon: Pokemon) {
+        pokemonAdapter.removePokemon(pokemon)
+        capturadosAdapter.addPokemon(pokemon)
+    }
+//    override fun onPokemonReleased(pokemon: Pokemon) {
+//        capturadosAdapter.removePokemon(pokemon)
+//        pokemonAdapter.addPokemon(pokemon)
+//    }
 
     //sobrecargamos el metodo onLongClick de la interfaz OnClickListener
     override fun onLongClick(pokemon: Pokemon) {
